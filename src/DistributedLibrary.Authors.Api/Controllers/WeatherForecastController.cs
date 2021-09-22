@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace DistributedLibrary.Authors.Api.Controllers
 {
@@ -11,29 +12,24 @@ namespace DistributedLibrary.Authors.Api.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
+        private const string FileName = @"authors.json";
+        public IEnumerable<dynamic> GetEntities()
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        {
-            _logger = logger;
+            return JsonConvert.DeserializeObject<IEnumerable<dynamic>>(System.IO.File.ReadAllText(FileName));
         }
-
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("/{authorId}")]
+        public dynamic Get(int authorId)
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+
+            foreach (var entity in GetEntities())
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                if (entity["id"] == authorId)
+                {
+                    return entity;
+                }
+            }
+
+            return null;
         }
     }
 }

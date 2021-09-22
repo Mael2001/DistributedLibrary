@@ -6,12 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="authors.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
   </ItemGroup>
 
 
